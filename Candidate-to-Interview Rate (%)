@@ -1,0 +1,48 @@
+-- CANDIDATE TO INTERVIEW RATE
+
+-- EMPLOYEE.DAYFORCE.HRA_TA_REQUISITIONS
+-- EMPLOYEE.DAYFORCE.HRA_TA_CANDIDATE_HISTORY
+-- 1015 - Spclst-Consumer Direct Sales
+-- 2771 - Elite Direct Sls Spclst-Kinetc
+-- 3020 - Performance Spclst-Cons Direct
+
+Select --req.requisition_id as "Req ID",
+       req.job_id as "Job ID",
+       req.job_title as "Job Title",
+       req.recruiter_name as "Recruiter",
+       --"NEW_DT" as "Month",
+       sum("NEW_CT") as "Total Candidates",
+       sum("INT_CT") as "Interview Scheduled",
+       cast(((sum("INT_CT") / sum("NEW_CT"))*100) AS NUMERIC(10, 2))||'%' as "Candidate-to-Interview Rate (%)"
+
+From EMPLOYEE.DAYFORCE.HRA_TA_REQUISITIONS req,
+
+      (Select req_n.requisition_id as "NEW_EQ",
+       --left(can_n.submission_date,7) as "NEW_DT",
+       count(can_n.SUBMISSION_STATUS) as "NEW_CT"
+       From EMPLOYEE.DAYFORCE.HRA_TA_REQUISITIONS req_n,
+       EMPLOYEE.DAYFORCE.HRA_TA_CANDIDATE_HISTORY can_n
+       Where replace(can_n.req_id,',','') = req_n.requisition_id
+       and can_n.submission_date >= '2025-10-01'
+       and can_n.SUBMISSION_STATUS = 'New'
+       group by req_n.requisition_id--, left(can_n.submission_date,7)
+       order by req_n.requisition_id) a,
+
+       (Select req_i.requisition_id as "INT_EQ",
+       --left(can_i.submission_date,7) as "INT_DT",
+       count(can_i.SUBMISSION_STATUS) as "INT_CT"
+       From EMPLOYEE.DAYFORCE.HRA_TA_REQUISITIONS req_i,
+       EMPLOYEE.DAYFORCE.HRA_TA_CANDIDATE_HISTORY can_i
+       Where replace(can_i.req_id,',','') = req_i.requisition_id
+       and can_i.submission_date >= '2025-10-01'
+       and can_i.SUBMISSION_STATUS = 'Interview - Scheduled'
+       group by req_i.requisition_id--, left(can_i.submission_date,7)
+       order by req_i.requisition_id) c 
+       
+Where req.requisition_id = "NEW_EQ" (+)
+
+and req.requisition_id = "INT_EQ" (+)
+and req.job_id in ('1015','2771','3020')
+and "NEW_CT" > 0
+--and req.req_status in ('Open','Pending','On Hold')
+group by req.job_id, req.job_title, req.recruiter_name
