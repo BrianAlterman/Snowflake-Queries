@@ -1,0 +1,27 @@
+-- Pull status "Declined" and derive the previous status
+-- EMPLOYEE.DAYFORCE.HRA_TA_CANDIDATE_HISTORY
+
+Select BEF.Req_id || '_' || BEF.CANDIDATE_ID as "REQ_CAND",
+       req.requisition_id as "Req ID",
+       req.job_title as "Job Title",
+       req.recruiter_name as "Recruiter",
+       bef.submission_date as "Submission Date",
+       bef.submission_status as "Current Status",
+       bef.status_effective_start as "Current Status Start",
+       befa.submission_status as "Previous Status",
+       befa.status_effective_start as "Previous Status Start",
+       --bef.status_effective_end,
+from EMPLOYEE.DAYFORCE.HRA_TA_CANDIDATE_HISTORY BEF,
+     EMPLOYEE.DAYFORCE.HRA_TA_CANDIDATE_HISTORY BEFA,
+     EMPLOYEE.DAYFORCE.HRA_TA_REQUISITIONS req
+where req.requisition_id = bef.req_id
+and bef.submission_date >= '2025-10-01'
+and req.job_id in ('1015','2771','3020')
+and bef.submission_status = 'Declined'
+and BEF.Req_id || '_' || BEF.CANDIDATE_ID = BEFa.Req_id || '_' || BEFa.CANDIDATE_ID
+and BEFa.status_effective_start = (select max(befs.status_effective_start)
+                                   from EMPLOYEE.DAYFORCE.HRA_TA_CANDIDATE_HISTORY BEFs
+                                   where BEFS.Req_id || '_' || BEFS.CANDIDATE_ID = befa.Req_id || '_' || BEFa.CANDIDATE_ID
+                                   and befs.status_effective_start < bef.status_effective_start)
+--and BEF.Req_id || '_' || BEF.CANDIDATE_ID = '5504_263232'
+order by BEF.Req_id || '_' || BEF.CANDIDATE_ID, bef.status_effective_start;
