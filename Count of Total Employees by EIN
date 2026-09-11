@@ -4,7 +4,8 @@
 Select * from 
 (Select
     count(l1.lvl_01_ein)-1 as "Leader Totals",
-    l1.lvl_01_ein as "Leader EIN"
+    l1.lvl_01_ein as "Leader EIN",
+    'L1' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l1
 where l1.lvl_01_ein is not null
@@ -13,7 +14,8 @@ group by
 union
 Select
     count(l2.lvl_02_ein)-1 as "Leader Totals",
-    l2.lvl_02_ein as "Leader EIN"
+    l2.lvl_02_ein as "Leader EIN",
+    'L2' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l2
 where l2.lvl_02_ein is not null
@@ -22,7 +24,8 @@ group by
 union
 Select
     count(l3.lvl_03_ein)-1 as "Leader Totals",
-    l3.lvl_03_ein as "Leader EIN"
+    l3.lvl_03_ein as "Leader EIN",
+    'L3' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l3
 where l3.lvl_03_ein is not null
@@ -31,7 +34,8 @@ group by
 union
 Select
     count(l4.lvl_04_ein)-1 as "Leader Totals",
-    l4.lvl_04_ein as "Leader EIN"
+    l4.lvl_04_ein as "Leader EIN",
+    'L4' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l4
 where l4.lvl_04_ein is not null
@@ -40,7 +44,8 @@ group by
 union
 Select
     count(l5.lvl_05_ein)-1 as "Leader Totals",
-    l5.lvl_05_ein as "Leader EIN"
+    l5.lvl_05_ein as "Leader EIN",
+    'L5' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l5
 where l5.lvl_05_ein is not null
@@ -49,7 +54,8 @@ group by
 union
 Select
     count(l6.lvl_06_ein)-1 as "Leader Totals",
-    l6.lvl_06_ein as "Leader EIN"
+    l6.lvl_06_ein as "Leader EIN",
+    'L6' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l6
 where l6.lvl_06_ein is not null
@@ -58,7 +64,8 @@ group by
 union
 Select
     count(l7.lvl_07_ein)-1 as "Leader Totals",
-    l7.lvl_07_ein as "Leader EIN"
+    l7.lvl_07_ein as "Leader EIN",
+    'L7' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l7
 where l7.lvl_07_ein is not null
@@ -67,7 +74,8 @@ group by
 union
 Select
     count(l8.lvl_08_ein)-1 as "Leader Totals",
-    l8.lvl_08_ein as "Leader EIN"
+    l8.lvl_08_ein as "Leader EIN",
+    'L8' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l8
 where l8.lvl_08_ein is not null
@@ -76,7 +84,8 @@ group by
 union
 select
     count(ceo.emplid) as "Leader Totals",
-    '1200228' as "Leader EIN"
+    '1200228' as "Leader EIN",
+    'L0' as "Leader Level"
 from
     EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN ceo
     ) LVL_MAST_CT 
