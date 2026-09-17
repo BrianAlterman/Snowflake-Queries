@@ -1,0 +1,149 @@
+Select
+    peo.emplid as "EIN",
+    peo.employee_name as "Employee Name",
+    peo.status as "Status",
+    case
+        when peo.emplid = lvl_01_ein then 'Level 1'
+        when peo.emplid = lvl_02_ein then 'Level 2'
+        when peo.emplid = lvl_03_ein then 'Level 3'
+        when peo.emplid = lvl_04_ein then 'Level 4'
+        when peo.emplid = lvl_05_ein then 'Level 5'
+        when peo.emplid = lvl_06_ein then 'Level 6'
+        when peo.emplid = lvl_07_ein then 'Level 7'
+        when peo.emplid = lvl_08_ein then 'Level 8'
+        when peo.emplid = '1200228' then 'Level 0'
+        else 'ERROR'
+    End as "Level",
+    "Leader Directs",
+    "Leader Totals",
+    peo.job_code as "Job Code",
+    peo.job_name as "Job Title",
+    peo.department as "Department",
+    peo.jdebu as "JDE BU",
+    peo.jdebu_desc as "BU Description",
+    peo.mgr_emplid as "Manager EIN",
+    peo.mgr_name as "Manager",
+    peo.lvl_01_ein as "Level 1 EIN",
+    peo.lvl_01_name as "Level 1 Name",
+    peo.lvl_02_ein as "Level 2 EIN",
+    peo.lvl_02_name as "Level 2 Name",
+    peo.lvl_03_ein as "Level 3 EIN",
+    peo.lvl_03_name as "Level 3 Name",
+    peo.lvl_04_ein as "Level 4 EIN",
+    peo.lvl_04_name as "Level 4 Name",
+    peo.lvl_05_ein as "Level 5 EIN",
+    peo.lvl_05_name as "Level 5 Name",
+    peo.lvl_06_ein as "Level 6 EIN",
+    peo.lvl_06_name as "Level 6 Name",
+    peo.lvl_07_ein as "Level 7 EIN",
+    peo.lvl_07_name as "Level 7 Name",
+    peo.lvl_08_ein as "Level 8 EIN",
+    peo.lvl_08_name as "Level 8 Name"
+from
+    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN peo,
+    (
+        Select
+            *
+        from
+            (
+                Select
+                    count(l1.lvl_01_ein) -1 as "Leader Totals",
+                    l1.lvl_01_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l1
+                where
+                    l1.lvl_01_ein is not null
+                group by
+                    l1.lvl_01_ein
+                union
+                Select
+                    count(l2.lvl_02_ein) -1 as "Leader Totals",
+                    l2.lvl_02_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l2
+                where
+                    l2.lvl_02_ein is not null
+                group by
+                    l2.lvl_02_ein
+                union
+                Select
+                    count(l3.lvl_03_ein) -1 as "Leader Totals",
+                    l3.lvl_03_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l3
+                where
+                    l3.lvl_03_ein is not null
+                group by
+                    l3.lvl_03_ein
+                union
+                Select
+                    count(l4.lvl_04_ein) -1 as "Leader Totals",
+                    l4.lvl_04_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l4
+                where
+                    l4.lvl_04_ein is not null
+                group by
+                    l4.lvl_04_ein
+                union
+                Select
+                    count(l5.lvl_05_ein) -1 as "Leader Totals",
+                    l5.lvl_05_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l5
+                where
+                    l5.lvl_05_ein is not null
+                group by
+                    l5.lvl_05_ein
+                union
+                Select
+                    count(l6.lvl_06_ein) -1 as "Leader Totals",
+                    l6.lvl_06_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l6
+                where
+                    l6.lvl_06_ein is not null
+                group by
+                    l6.lvl_06_ein
+                union
+                Select
+                    count(l7.lvl_07_ein) -1 as "Leader Totals",
+                    l7.lvl_07_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l7
+                where
+                    l7.lvl_07_ein is not null
+                group by
+                    l7.lvl_07_ein
+                union
+                Select
+                    count(l8.lvl_08_ein) -1 as "Leader Totals",
+                    l8.lvl_08_ein as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN l8
+                where
+                    l8.lvl_08_ein is not null
+                group by
+                    l8.lvl_08_ein
+                union
+                select
+                    count(ceo.emplid) as "Leader Totals",
+                    '1200228' as "Leader EIN"
+                from
+                    EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN ceo
+            ) LVL_MAST_CT
+        where
+            "Leader Totals" > 0
+    ) cts,
+    (
+        select
+            count(mgr.mgr_emplid) as "Leader Directs",
+            mgr.mgr_emplid as "Leader"
+        from
+            EMPLOYEE.DAYFORCE.HRA_HR_HEADCOUNT_HRADMIN mgr
+        group by
+            mgr.mgr_emplid
+    ) mgr
+where
+    peo.emplid = "Leader EIN" (+)
+    and peo.emplid = "Leader" (+);
